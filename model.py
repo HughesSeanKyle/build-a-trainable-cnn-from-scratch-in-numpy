@@ -70,8 +70,17 @@ def he_std(fan_in):
     """Calculate the standard deviation for He initialization."""
     return np.sqrt(2.0 / fan_in)
 
-# Step 11 - he_init (not yet solved)
-# TODO: implement
+# Step 11 - he_init
+def he_init(shape, fan_in, seed=0):
+    """
+    Initialize weights using He normal distribution given a shape tuple and seed.
+    Returns a float64 NumPy array.
+    """
+    # Explicitly seed NumPy's global RNG before sampling
+    np.random.seed(seed)
+    
+    # Draw from a standard normal distribution and scale by He standard deviation
+    return np.random.randn(*shape).astype(np.float64) * he_std(fan_in)
 
 # Step 12 - init_zero_bias (not yet solved)
 # TODO: implement
