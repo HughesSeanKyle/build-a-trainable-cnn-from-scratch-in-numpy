@@ -38,8 +38,10 @@ def stable_softmax(logits):
     exps = exp_shifted(logits)
     return exps / row_sum(exps)
 
-# Step 6 - one_hot (not yet solved)
-# TODO: implement
+# Step 6 - one_hot
+def one_hot(labels, num_classes):
+    """Convert an array of integer labels (N,) into a one-hot encoded matrix (N, num_classes)."""
+    return np.eye(num_classes)[labels]
 
 # Step 7 - gather_true_class_probs (not yet solved)
 # TODO: implement
