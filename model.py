@@ -25,8 +25,12 @@ def row_sum(matrix):
     """Return the sum of each row, reshaping to a column vector (N, 1)."""
     return np.sum(matrix, axis=1, keepdims=True)
 
-# Step 4 - exp_shifted (not yet solved)
-# TODO: implement
+# Step 4 - exp_shifted
+import numpy as np
+
+def exp_shifted(logits):
+    """Compute the element-wise exponential after shifting rows by their maximum."""
+    return np.exp(logits - row_max(logits))
 
 # Step 5 - stable_softmax (not yet solved)
 # TODO: implement
