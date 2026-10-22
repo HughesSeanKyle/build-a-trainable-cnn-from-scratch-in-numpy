@@ -43,8 +43,11 @@ def one_hot(labels, num_classes):
     """Convert an array of integer labels (N,) into a one-hot encoded matrix (N, num_classes)."""
     return np.eye(num_classes)[labels]
 
-# Step 7 - gather_true_class_probs (not yet solved)
-# TODO: implement
+# Step 7 - gather_true_class_probs
+def gather_true_class_probs(probs, labels):
+    """Extract the probability assigned to the true class label for each sample."""
+    # Uses advanced indexing to grab probs[0, labels[0]], probs[1, labels[1]], etc.
+    return probs[np.arange(len(labels)), labels]
 
 # Step 8 - cross_entropy_loss (not yet solved)
 # TODO: implement
