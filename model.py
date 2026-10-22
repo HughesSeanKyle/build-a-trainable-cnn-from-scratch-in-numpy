@@ -89,8 +89,16 @@ def init_zero_bias(length):
     """Initialize a zero-filled vector for layer biases."""
     return np.zeros((length,))
 
-# Step 13 - pad_2d (not yet solved)
-# TODO: implement
+# Step 13 - pad_2d
+def pad_2d(images, pad):
+    """
+    Apply zero-padding to the height and width dimensions of a 4D tensor X.
+    X shape: (N, C, H, W)
+    """
+    if pad == 0:
+        return images
+    # pad width tuple format: ((before_axis0, after_axis0), (before_axis1, after_axis1)...)
+    return np.pad(images, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant', constant_values=0)
 
 # Step 14 - output_spatial_size (not yet solved)
 # TODO: implement
