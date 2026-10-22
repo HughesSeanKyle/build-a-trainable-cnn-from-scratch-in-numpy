@@ -32,8 +32,11 @@ def exp_shifted(logits):
     """Compute the element-wise exponential after shifting rows by their maximum."""
     return np.exp(logits - row_max(logits))
 
-# Step 5 - stable_softmax (not yet solved)
-# TODO: implement
+# Step 5 - stable_softmax
+def stable_softmax(logits):
+    """Compute numerically stable softmax probabilities for each row."""
+    exps = exp_shifted(logits)
+    return exps / row_sum(exps)
 
 # Step 6 - one_hot (not yet solved)
 # TODO: implement
