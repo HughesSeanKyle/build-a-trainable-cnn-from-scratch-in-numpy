@@ -82,8 +82,12 @@ def he_init(shape, fan_in, seed=0):
     # Draw from a standard normal distribution and scale by He standard deviation
     return np.random.randn(*shape).astype(np.float64) * he_std(fan_in)
 
-# Step 12 - init_zero_bias (not yet solved)
-# TODO: implement
+# Step 12 - init_zero_bias
+import numpy as np
+
+def init_zero_bias(length):
+    """Initialize a zero-filled vector for layer biases."""
+    return np.zeros((length,))
 
 # Step 13 - pad_2d (not yet solved)
 # TODO: implement
