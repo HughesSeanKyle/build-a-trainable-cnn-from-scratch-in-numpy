@@ -65,8 +65,10 @@ def accuracy(logits_or_probs, labels):
     predictions = argmax_rows(logits_or_probs)
     return np.mean(predictions == labels)
 
-# Step 10 - he_std (not yet solved)
-# TODO: implement
+# Step 10 - he_std
+def he_std(fan_in):
+    """Calculate the standard deviation for He initialization."""
+    return np.sqrt(2.0 / fan_in)
 
 # Step 11 - he_init (not yet solved)
 # TODO: implement
