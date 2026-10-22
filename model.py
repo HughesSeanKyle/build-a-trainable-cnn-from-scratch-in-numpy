@@ -142,8 +142,35 @@ def im2col(images, kernel_h, kernel_w, stride, padding):
                 
     return cols
 
-# Step 16 - col2im (not yet solved)
-# TODO: implement
+# Step 16 - col2im
+# Step 16 - col2im
+def col2im(cols, X_shape, kernel_h, kernel_w, stride, padding):
+    """
+    The exact structural inverse to aggregate row-major column matrices 
+    back into a 4D image tensor layout during backprop.
+    """
+    N, C, H, W = X_shape
+    H_out = output_spatial_size(H, kernel_h, stride, padding)
+    W_out = output_spatial_size(W, kernel_w, stride, padding)
+    
+    X_pad = np.zeros((N, C, H + 2 * padding, W + 2 * padding), dtype=cols.dtype)
+    
+    row_idx = 0
+    for n in range(N):
+        for i in range(H_out):
+            h_start = i * stride
+            h_end = h_start + kernel_h
+            for j in range(W_out):
+                w_start = j * stride
+                w_end = w_start + kernel_w
+                
+                # Reshape the flat row slice back into a 3D patch and accumulate
+                X_pad[n, :, h_start:h_end, w_start:w_end] += cols[row_idx, :].reshape(C, kernel_h, kernel_w)
+                row_idx += 1
+                
+    if padding > 0:
+        return X_pad[:, :, padding:-padding, padding:-padding]
+    return X_pad
 
 # Step 17 - conv2d_forward (not yet solved)
 # TODO: implement
