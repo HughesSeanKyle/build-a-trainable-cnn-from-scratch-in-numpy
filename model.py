@@ -100,8 +100,10 @@ def pad_2d(images, pad):
     # pad width tuple format: ((before_axis0, after_axis0), (before_axis1, after_axis1)...)
     return np.pad(images, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant', constant_values=0)
 
-# Step 14 - output_spatial_size (not yet solved)
-# TODO: implement
+# Step 14 - output_spatial_size
+def output_spatial_size(input_size, kernel, stride, padding):
+    """Calculate the output spatial size (Height or Width) for a 2D convolution."""
+    return int(np.floor((input_size + 2 * padding - kernel) / stride)) + 1
 
 # Step 15 - im2col (not yet solved)
 # TODO: implement
