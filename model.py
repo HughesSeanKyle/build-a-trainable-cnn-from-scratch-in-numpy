@@ -105,8 +105,42 @@ def output_spatial_size(input_size, kernel, stride, padding):
     """Calculate the output spatial size (Height or Width) for a 2D convolution."""
     return int(np.floor((input_size + 2 * padding - kernel) / stride)) + 1
 
-# Step 15 - im2col (not yet solved)
-# TODO: implement
+# Step 15 - im2col
+# Step 15 - im2col
+def im2col(images, kernel_h, kernel_w, stride, padding):
+    """
+    Transform a 4D image tensor into a 2D matrix where each ROW represents 
+    a sliding window patch, matching the framework's layout.
+    
+    Expected output shape: (N * H_out * W_out, C * kernel_h * kernel_w)
+    """
+    N, C, H, W = images.shape
+    H_out = output_spatial_size(H, kernel_h, stride, padding)
+    W_out = output_spatial_size(W, kernel_w, stride, padding)
+    
+    X_pad = pad_2d(images, padding)
+    
+    # Initialize the output matrix: each row is one patch
+    cols = np.zeros((N * H_out * W_out, C * kernel_h * kernel_w), dtype=images.dtype)
+    
+    row_idx = 0
+    # Loop order to match row-major sample stacking requirements
+    for n in range(N):
+        for i in range(H_out):
+            h_start = i * stride
+            h_end = h_start + kernel_h
+            for j in range(W_out):
+                w_start = j * stride
+                w_end = w_start + kernel_w
+                
+                # Extract the patch volume: shape (C, kernel_h, kernel_w)
+                patch = X_pad[n, :, h_start:h_end, w_start:w_end]
+                
+                # Flatten the patch into a 1D row array and assign it
+                cols[row_idx, :] = patch.ravel()
+                row_idx += 1
+                
+    return cols
 
 # Step 16 - col2im (not yet solved)
 # TODO: implement
