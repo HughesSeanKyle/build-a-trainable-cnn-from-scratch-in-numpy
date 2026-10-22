@@ -49,8 +49,15 @@ def gather_true_class_probs(probs, labels):
     # Uses advanced indexing to grab probs[0, labels[0]], probs[1, labels[1]], etc.
     return probs[np.arange(len(labels)), labels]
 
-# Step 8 - cross_entropy_loss (not yet solved)
-# TODO: implement
+# Step 8 - cross_entropy_loss
+import numpy as np
+
+def cross_entropy_loss(probs, labels, eps=1e-12):
+    """Compute the mean cross-entropy loss over a batch, clipped for safety."""
+    true_probs = gather_true_class_probs(probs, labels)
+    # Clip probabilities to avoid taking log(0)
+    true_probs = np.clip(true_probs, eps, 1.0)
+    return -np.mean(np.log(true_probs))
 
 # Step 9 - accuracy (not yet solved)
 # TODO: implement
