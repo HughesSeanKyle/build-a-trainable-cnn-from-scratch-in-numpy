@@ -230,8 +230,23 @@ def conv2d_grad_input(d_out, cache):
     # Accumulate patches back into the 4D input image tensor shape
     return col2im(dx_col, x.shape, kh, kw, stride, padding)
 
-# Step 19 - conv2d_grad_weights (not yet solved)
-# TODO: implement
+# Step 19 - conv2d_grad_weights
+def conv2d_grad_weights(d_out, cache):
+    """Compute gradient with respect to convolutional filter weights from the cache."""
+    weights = cache['weights']
+    # Pull the im2col matrix using the correct 'cols' dictionary key
+    cols = cache['cols']
+    
+    C_out, C_in, kh, kw = weights.shape
+    
+    # Rearrange d_out back into a row-major matrix: (N * H_out * W_out, C_out)
+    dout_reshaped = d_out.transpose(0, 2, 3, 1).reshape(-1, C_out)
+    
+    # Gradient calculation via Matrix Multiplication matching our row-major layout
+    dweights_row = cols.T @ dout_reshaped
+    
+    # Transpose and reshape back to canonical 4D weight layout (C_out, C_in, kh, kw)
+    return dweights_row.T.reshape(weights.shape)
 
 # Step 20 - conv2d_grad_bias (not yet solved)
 # TODO: implement
