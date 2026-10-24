@@ -406,8 +406,13 @@ def linear_forward(x, weights, bias):
     }
     return out, cache
 
-# Step 30 - linear_grad_input (not yet solved)
-# TODO: implement
+# Step 30 - linear_grad_input
+import numpy as np
+
+def linear_grad_input(d_out, cache):
+    """Compute linear gradient with respect to inputs x from the stripped cache."""
+    weights = cache['weights']
+    return d_out @ weights.T
 
 # Step 31 - linear_grad_weights (not yet solved)
 # TODO: implement
