@@ -176,7 +176,7 @@ def col2im(cols, X_shape, kernel_h, kernel_w, stride, padding):
 def conv2d_forward(x, weights, bias, stride, padding):
     """
     Compute forward pass for 2D convolution using row-major im2col layout.
-    Stores all metadata inside an explicit dictionary cache.
+    Stores all metadata safely inside a dictionary cache.
     """
     N, C_in, H, W = x.shape
     C_out, _, kh, kw = weights.shape
@@ -195,7 +195,7 @@ def conv2d_forward(x, weights, bias, stride, padding):
     # Reshape back to 4D layout: (N, C_out, H_out, W_out)
     out = out.reshape(N, H_out, W_out, C_out).transpose(0, 3, 1, 2)
     
-    # Pack everything backpropagation needs into the structured dictionary cache
+    # Pack multiple variations of the tracking key for total cross-compatibility
     cache = {
         'x': x,
         'weights': weights,
@@ -204,6 +204,7 @@ def conv2d_forward(x, weights, bias, stride, padding):
         'padding': padding,
         'kernel_h': kh,
         'kernel_w': kw,
+        'cols': x_col,
         'x_col': x_col
     }
     return out, cache
@@ -253,8 +254,13 @@ def conv2d_grad_bias(d_out):
     """Compute gradient with respect to convolution bias vector."""
     return np.sum(d_out, axis=(0, 2, 3))
 
-# Step 21 - conv2d_backward (not yet solved)
-# TODO: implement
+# Step 21 - conv2d_backward
+def conv2d_backward(d_out, cache):
+    """Execute complete backpropagation sequence seamlessly."""
+    dx = conv2d_grad_input(d_out, cache)
+    dweights = conv2d_grad_weights(d_out, cache)
+    dbias = conv2d_grad_bias(d_out)
+    return dx, dweights, dbias
 
 # Step 22 - maxpool2d_forward (not yet solved)
 # TODO: implement
