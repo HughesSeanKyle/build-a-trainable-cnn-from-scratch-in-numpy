@@ -424,8 +424,19 @@ def linear_grad_input(d_out, cache):
 import numpy as np
 
 def linear_grad_weights(x, dout):
-    """Compute linear gradient with respect to weights directly from matrices."""
-    return x.T @ dout
+    """
+    Compute linear gradient with respect to weights.
+    Handles legacy positional parameters (x, d_out) or dictionary formats safely.
+    """
+    # If called with a single dictionary cache as the second argument
+    if isinstance(dout, dict):
+        x = dout['x']
+        d_out = x
+    else:
+        x = x
+        d_out = dout
+        
+    return x.T @ d_out
 
 # Step 32 - linear_grad_bias
 import numpy as np
