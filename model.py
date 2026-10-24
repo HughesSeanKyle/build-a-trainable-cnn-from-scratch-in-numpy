@@ -414,8 +414,12 @@ def linear_grad_input(d_out, cache):
     weights = cache['weights']
     return d_out @ weights.T
 
-# Step 31 - linear_grad_weights (not yet solved)
-# TODO: implement
+# Step 31 - linear_grad_weights
+import numpy as np
+
+def linear_grad_weights(x, dout):
+    """Compute linear gradient with respect to weights directly from matrices."""
+    return x.T @ dout
 
 # Step 32 - linear_grad_bias (not yet solved)
 # TODO: implement
