@@ -319,8 +319,39 @@ def scatter_grad_window(grad_value, argmax_index, kernel):
     
     return window_grad
 
-# Step 24 - maxpool2d_backward (not yet solved)
-# TODO: implement
+# Step 24 - maxpool2d_backward
+def maxpool2d_backward(d_out, cache):
+    """
+    Backward pass for 2D Max Pooling layer utilizing the optimized scatter_grad_window helper.
+    """
+    N, C, H, W = cache['x_shape']
+    argmax = cache['argmax']
+    kernel = cache['kernel']
+    stride = cache['stride']
+    
+    _, _, H_out, W_out = d_out.shape
+    dx = np.zeros((N, C, H, W), dtype=np.float64)
+    
+    for n in range(N):
+        for c in range(C):
+            for i in range(H_out):
+                h_start = i * stride
+                h_end = h_start + kernel
+                for j in range(W_out):
+                    w_start = j * stride
+                    w_end = w_start + kernel
+                    
+                    # Pull values to hand off to our standalone scatter primitive
+                    dout_val = d_out[n, c, i, j]
+                    argmax_index = argmax[n, c, i, j]
+                    
+                    # Generate the localized window gradient map
+                    window_grad = scatter_grad_window(dout_val, argmax_index, kernel)
+                    
+                    # Accumulate the window directly into the target spatial slice of dx
+                    dx[n, c, h_start:h_end, w_start:w_end] += window_grad
+                    
+    return dx
 
 # Step 25 - relu_forward (not yet solved)
 # TODO: implement
