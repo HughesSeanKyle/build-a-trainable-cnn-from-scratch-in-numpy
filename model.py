@@ -396,8 +396,15 @@ def flatten_backward(d_out, cache):
     x_shape = cache['x_shape']
     return d_out.reshape(x_shape)
 
-# Step 29 - linear_forward (not yet solved)
-# TODO: implement
+# Step 29 - linear_forward
+def linear_forward(x, weights, bias):
+    """Forward pass for a dense linear layer. Excludes bias from cache keys."""
+    out = x @ weights + bias
+    cache = {
+        'x': x,
+        'weights': weights
+    }
+    return out, cache
 
 # Step 30 - linear_grad_input (not yet solved)
 # TODO: implement
