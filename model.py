@@ -248,8 +248,10 @@ def conv2d_grad_weights(d_out, cache):
     # Transpose and reshape back to canonical 4D weight layout (C_out, C_in, kh, kw)
     return dweights_row.T.reshape(weights.shape)
 
-# Step 20 - conv2d_grad_bias (not yet solved)
-# TODO: implement
+# Step 20 - conv2d_grad_bias
+def conv2d_grad_bias(d_out):
+    """Compute gradient with respect to convolution bias vector."""
+    return np.sum(d_out, axis=(0, 2, 3))
 
 # Step 21 - conv2d_backward (not yet solved)
 # TODO: implement
