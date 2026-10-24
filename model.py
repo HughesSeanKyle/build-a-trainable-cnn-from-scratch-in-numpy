@@ -360,8 +360,13 @@ def relu_forward(x):
     cache = {'x': x}
     return out, cache
 
-# Step 26 - relu_backward (not yet solved)
-# TODO: implement
+# Step 26 - relu_backward
+def relu_backward(d_out, cache):
+    """Backward pass for element-wise rectified linear unit (ReLU)."""
+    x = cache['x']
+    dx = np.copy(d_out)
+    dx[x <= 0] = 0
+    return dx
 
 # Step 27 - flatten_forward (not yet solved)
 # TODO: implement
