@@ -368,8 +368,22 @@ def relu_backward(d_out, cache):
     dx[x <= 0] = 0
     return dx
 
-# Step 27 - flatten_forward (not yet solved)
-# TODO: implement
+# Step 27 - flatten_forward
+def flatten_forward(x):
+    """
+    Flatten a multi-dimensional array into a 2D batch row matrix,
+    preserving the batch axis (axis 0).
+    
+    Returns (out, cache) matching the required 'x_shape' dictionary lookup.
+    """
+    x_shape = x.shape
+    # Flatten everything from axis 1 onwards while leaving axis 0 intact
+    out = x.reshape(x_shape[0], -1)
+    
+    cache = {
+        'x_shape': x_shape
+    }
+    return out, cache
 
 # Step 28 - flatten_backward (not yet solved)
 # TODO: implement
