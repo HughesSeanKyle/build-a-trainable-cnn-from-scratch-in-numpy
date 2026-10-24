@@ -176,9 +176,7 @@ def col2im(cols, X_shape, kernel_h, kernel_w, stride, padding):
 def conv2d_forward(x, weights, bias, stride, padding):
     """
     Compute forward pass for 2D convolution using row-major im2col layout.
-    Stores metadata as explicit dictionary keys inside the backprop cache.
-    
-    x: (N, C_in, H, W), weights: (C_out, C_in, kh, kw), bias: (C_out,)
+    Stores all metadata inside an explicit dictionary cache.
     """
     N, C_in, H, W = x.shape
     C_out, _, kh, kw = weights.shape
@@ -197,7 +195,7 @@ def conv2d_forward(x, weights, bias, stride, padding):
     # Reshape back to 4D layout: (N, C_out, H_out, W_out)
     out = out.reshape(N, H_out, W_out, C_out).transpose(0, 3, 1, 2)
     
-    # Construct a structured dictionary cache to satisfy grading validation lookups
+    # Pack everything backpropagation needs into the structured dictionary cache
     cache = {
         'x': x,
         'weights': weights,
@@ -210,8 +208,27 @@ def conv2d_forward(x, weights, bias, stride, padding):
     }
     return out, cache
 
-# Step 18 - conv2d_grad_input (not yet solved)
-# TODO: implement
+# Step 18 - conv2d_grad_input
+def conv2d_grad_input(d_out, cache):
+    """Compute gradient with respect to input x from the cache."""
+    x = cache['x']
+    weights = cache['weights']
+    stride = cache['stride']
+    padding = cache['padding']
+    kh = cache['kernel_h']
+    kw = cache['kernel_w']
+    
+    C_out, C_in, _, _ = weights.shape
+    weights_row = weights.reshape(C_out, -1).T  # Shape: (C_in * kh * kw, C_out)
+    
+    # Rearrange dout back into a row-major matrix: (N * H_out * W_out, C_out)
+    dout_reshaped = dout.transpose(0, 2, 3, 1).reshape(-1, C_out)
+    
+    # Calculate input columns matrix gradient
+    dx_col = dout_reshaped @ weights_row.T
+    
+    # Accumulate patches back into the 4D input image tensor shape
+    return col2im(dx_col, x.shape, kh, kw, stride, padding)
 
 # Step 19 - conv2d_grad_weights (not yet solved)
 # TODO: implement
