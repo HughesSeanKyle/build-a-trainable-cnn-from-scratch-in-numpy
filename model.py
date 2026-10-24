@@ -254,8 +254,46 @@ def conv2d_backward(d_out, cache):
     dbias = conv2d_grad_bias(d_out)
     return dx, dweights, dbias
 
-# Step 22 - maxpool2d_forward (not yet solved)
-# TODO: implement
+# Step 22 - maxpool2d_forward
+def maxpool2d_forward(x, kernel=2, stride=2):
+    """
+    Forward pass for 2D Max Pooling layer tracking flat argmax indices.
+    x: (N, C, H, W)
+    Returns (out, cache) matching the strict key validation requirements.
+    """
+    N, C, H, W = x.shape
+    # Step 14 output_spatial_size is available globally
+    H_out = output_spatial_size(H, kernel, stride, padding=0)
+    W_out = output_spatial_size(W, kernel, stride, padding=0)
+    
+    # Initialize output activation and flat argmax tracking maps
+    out = np.zeros((N, C, H_out, W_out), dtype=x.dtype)
+    argmax = np.zeros((N, C, H_out, W_out), dtype=np.int64)
+    
+    for i in range(H_out):
+        h_start = i * stride
+        h_end = h_start + kernel
+        for j in range(W_out):
+            w_start = j * stride
+            w_end = w_start + kernel
+            
+            # Extract spatial window across all batch elements and channels
+            patch = x[:, :, h_start:h_end, w_start:w_end]
+            
+            # Reshape the spatial patch to flat rows to pull max and flat index values
+            # patch shape becomes: (N, C, kernel * kernel)
+            patch_flat = patch.reshape(N, C, -1)
+            
+            out[:, :, i, j] = np.max(patch_flat, axis=2)
+            argmax[:, :, i, j] = np.argmax(patch_flat, axis=2)
+            
+    cache = {
+        'x_shape': x.shape,
+        'argmax': argmax,
+        'kernel': kernel,
+        'stride': stride
+    }
+    return out, cache
 
 # Step 23 - scatter_grad_window (not yet solved)
 # TODO: implement
