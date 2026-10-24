@@ -353,8 +353,12 @@ def maxpool2d_backward(d_out, cache):
                     
     return dx
 
-# Step 25 - relu_forward (not yet solved)
-# TODO: implement
+# Step 25 - relu_forward
+def relu_forward(x):
+    """Forward pass for element-wise rectified linear unit (ReLU)."""
+    out = np.maximum(0, x)
+    cache = {'x': x}
+    return out, cache
 
 # Step 26 - relu_backward (not yet solved)
 # TODO: implement
