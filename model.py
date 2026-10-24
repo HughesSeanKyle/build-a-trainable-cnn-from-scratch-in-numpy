@@ -222,7 +222,7 @@ def conv2d_grad_input(d_out, cache):
     weights_row = weights.reshape(C_out, -1).T  # Shape: (C_in * kh * kw, C_out)
     
     # Rearrange dout back into a row-major matrix: (N * H_out * W_out, C_out)
-    dout_reshaped = dout.transpose(0, 2, 3, 1).reshape(-1, C_out)
+    dout_reshaped = d_out.transpose(0, 2, 3, 1).reshape(-1, C_out)
     
     # Calculate input columns matrix gradient
     dx_col = dout_reshaped @ weights_row.T
