@@ -410,8 +410,14 @@ def linear_forward(x, weights, bias):
 import numpy as np
 
 def linear_grad_input(d_out, cache):
-    """Compute linear gradient with respect to inputs x from the stripped cache."""
-    weights = cache['weights']
+    """
+    Compute linear gradient with respect to inputs x.
+    Accepts either a raw weights matrix or a cache dictionary for total compatibility.
+    """
+    if isinstance(cache, dict):
+        weights = cache['weights']
+    else:
+        weights = cache
     return d_out @ weights.T
 
 # Step 31 - linear_grad_weights
@@ -428,8 +434,21 @@ def linear_grad_bias(dout):
     """Compute linear gradient with respect to bias vector."""
     return np.sum(dout, axis=0)
 
-# Step 33 - linear_backward (not yet solved)
-# TODO: implement
+# Step 33 - linear_backward
+def linear_backward(dout, cache):
+    """
+    Execute full backpropagation sequence for a fully-connected layer.
+    Unpacks raw tensors out of the stripped cache to distribute to standard primitives.
+    """
+    x = cache['x']
+    weights = cache['weights']
+    
+    # Delegate to the standalone, matrix-level primitives
+    dx = linear_grad_input(dout, weights)
+    dweights = linear_grad_weights(x, dout)
+    dbias = linear_grad_bias(dout)
+    
+    return dx, dweights, dbias
 
 # Step 34 - softmax_cross_entropy_forward (not yet solved)
 # TODO: implement
