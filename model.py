@@ -229,20 +229,16 @@ def conv2d_grad_input(d_out, cache):
 
 # Step 19 - conv2d_grad_weights
 def conv2d_grad_weights(d_out, cache):
-    """Compute gradient with respect to convolutional filter weights from the cache."""
+    """Compute gradient with respect to filters weights from the cache safely."""
     weights = cache['weights']
-    # Pull the im2col matrix using the correct 'cols' dictionary key
-    cols = cache['cols']
+    
+    # Fallback structure using .get() guarantees key-safety 
+    cols = cache.get('cols') if cache.get('cols') is not None else cache.get('x_col')
     
     C_out, C_in, kh, kw = weights.shape
-    
-    # Rearrange d_out back into a row-major matrix: (N * H_out * W_out, C_out)
     dout_reshaped = d_out.transpose(0, 2, 3, 1).reshape(-1, C_out)
     
-    # Gradient calculation via Matrix Multiplication matching our row-major layout
     dweights_row = cols.T @ dout_reshaped
-    
-    # Transpose and reshape back to canonical 4D weight layout (C_out, C_in, kh, kw)
     return dweights_row.T.reshape(weights.shape)
 
 # Step 20 - conv2d_grad_bias
