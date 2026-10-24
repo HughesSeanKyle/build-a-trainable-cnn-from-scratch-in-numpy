@@ -425,14 +425,19 @@ import numpy as np
 
 def linear_grad_weights(x, dout):
     """
-    Compute linear gradient with respect to weights.
-    Handles legacy positional parameters (x, d_out) or dictionary formats safely.
+    Compute linear gradient with respect to weights using the exact formula: x.T @ d_out.
+    Robustly handles both standalone call signatures and integrated backward dictionaries.
     """
-    # If called with a single dictionary cache as the second argument
     if isinstance(dout, dict):
-        x = dout['x']
+        # Integrated backward mode: linear_grad_weights(d_out, cache)
         d_out = x
+        x = dout['x']
+    elif isinstance(x, dict):
+        # Integrated backward fallback: linear_grad_weights(cache, d_out)
+        d_out = dout
+        x = x['x']
     else:
+        # Standalone isolated mode: linear_grad_weights(x, d_out)
         x = x
         d_out = dout
         
