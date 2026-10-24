@@ -385,8 +385,16 @@ def flatten_forward(x):
     }
     return out, cache
 
-# Step 28 - flatten_backward (not yet solved)
-# TODO: implement
+# Step 28 - flatten_backward
+import numpy as np
+
+def flatten_backward(d_out, cache):
+    """
+    Restore the 4D or volumetric dimensional layout of an incoming 
+    matrix gradient using the recorded 'x_shape'.
+    """
+    x_shape = cache['x_shape']
+    return d_out.reshape(x_shape)
 
 # Step 29 - linear_forward (not yet solved)
 # TODO: implement
