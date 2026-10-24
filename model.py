@@ -412,7 +412,7 @@ import numpy as np
 def linear_grad_input(d_out, cache):
     """
     Compute linear gradient with respect to inputs x.
-    Accepts either a raw weights matrix or a cache dictionary for total compatibility.
+    Accepts either a raw weights matrix or a cache dictionary safely.
     """
     if isinstance(cache, dict):
         weights = cache['weights']
@@ -449,17 +449,12 @@ def linear_grad_bias(dout):
 def linear_backward(dout, cache):
     """
     Execute full backpropagation sequence for a fully-connected layer.
-    Unpacks raw tensors out of the stripped cache to distribute to standard primitives.
+    Passes the unified cache directly to primitives to avoid layout bugs.
     """
-    x = cache['x']
-    weights = cache['weights']
-    
-    # Delegate to the standalone, matrix-level primitives
-    dx = linear_grad_input(dout, weights)
-    dweights = linear_grad_weights(x, dout)
-    dbias = linear_grad_bias(dout)
-    
-    return dx, dweights, dbias
+    dx = linear_grad_input(dout, cache)
+    dW = linear_grad_weights(dout, cache)
+    db = linear_grad_bias(dout)
+    return dx, dW, db
 
 # Step 34 - softmax_cross_entropy_forward (not yet solved)
 # TODO: implement
