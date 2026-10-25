@@ -709,8 +709,27 @@ def init_lenet(in_channels=1, num_classes=10, seed=0):
         'fc2': fc2
     }
 
-# Step 45 - forward_conv_block (not yet solved)
-# TODO: implement
+# Step 45 - forward_conv_block
+def forward_conv_block(x, W, b, pool_size, stride, pad):
+    """
+    Chain a convolution, a ReLU activation, and a 2D max-pool in sequence.
+    The pool's stride equals its window size (non-overlapping pooling).
+    """
+    # 1. Convolution
+    conv_out, conv_cache = conv2d_forward(x, W, b, stride, pad)
+    
+    # 2. Activation
+    relu_out, relu_cache = relu_forward(conv_out)
+    
+    # 3. Max Pooling (pool stride = pool window size)
+    pool_out, pool_cache = maxpool2d_forward(relu_out, kernel=pool_size, stride=pool_size)
+    
+    cache = {
+        'conv_cache': conv_cache,
+        'relu_cache': relu_cache,
+        'pool_cache': pool_cache
+    }
+    return pool_out, cache
 
 # Step 46 - forward_classifier_block (not yet solved)
 # TODO: implement
