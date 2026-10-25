@@ -576,8 +576,20 @@ def adam_update_v(v, grad, beta_two):
     """
     return beta_two * v + (1.0 - beta_two) * (grad ** 2)
 
-# Step 39 - adam_bias_correct (not yet solved)
-# TODO: implement
+# Step 39 - adam_bias_correct
+def adam_bias_correct(moment, beta, t):
+    """
+    Return the bias-corrected moment estimate for Adam.
+    
+    Args:
+        moment: Accumulated moment array (m or v).
+        beta: Corresponding decay rate (beta_one or beta_two).
+        t: Current global training step counter index (starting from 1).
+        
+    Returns:
+        corrected_moment: Rescaled moment estimate array.
+    """
+    return moment / (1.0 - (beta ** t))
 
 # Step 40 - adam_param_step (not yet solved)
 # TODO: implement
