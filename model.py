@@ -525,8 +525,22 @@ def softmax_cross_entropy_backward(logits, y):
     
     return dlogits
 
-# Step 36 - sgd_step (not yet solved)
-# TODO: implement
+# Step 36 - sgd_step
+import numpy as np
+
+def sgd_step(param, grad, lr):
+    """
+    Perform a single parameter step update using Stochastic Gradient Descent.
+    
+    Args:
+        param: Current parameter tensor.
+        grad: Gradient tensor (same shape as param).
+        lr: Scalar learning rate.
+        
+    Returns:
+        updated_param: Updated parameter array.
+    """
+    return param - lr * grad
 
 # Step 37 - adam_update_m (not yet solved)
 # TODO: implement
