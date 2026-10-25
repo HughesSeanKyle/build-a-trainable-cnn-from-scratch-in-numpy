@@ -968,8 +968,27 @@ def train_step(params, opt_state, xb, yb, lr, beta_one, beta_two, eps, step):
             
     return new_params, new_opt_state, loss
 
-# Step 57 - train_one_epoch (not yet solved)
-# TODO: implement
+# Step 57 - train_one_epoch
+def train_one_epoch(params, opt_state, x, y, batch_size, lr, beta_one, beta_two, eps, step_counter, seed=0):
+    """
+    Perform one full pass over the training data using shuffled minibatches.
+    """
+    loss_list = []
+    
+    # Step 55 generator call
+    batch_generator = iterate_minibatches(x, y, batch_size, seed=seed)
+    
+    for xb, yb in batch_generator:
+        step_counter += 1
+        
+        # Step 56 update step call
+        params, opt_state, loss = train_step(
+            params, opt_state, xb, yb, lr, 
+            beta_one, beta_two, eps, step=step_counter
+        )
+        loss_list.append(loss)
+        
+    return params, opt_state, step_counter, loss_list
 
 # Step 58 - train_loop (not yet solved)
 # TODO: implement
