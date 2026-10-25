@@ -677,8 +677,37 @@ def init_linear_layer(in_features, out_features, seed=0):
     
     return {'W': W, 'b': b}
 
-# Step 44 - init_lenet (not yet solved)
-# TODO: implement
+# Step 44 - init_lenet
+def init_lenet(in_channels=1, num_classes=10, seed=0):
+    """
+    Build the parameter dictionary for a LeNet-style network.
+    
+    Args:
+        in_channels: Integer indicating the depth of the input volume (e.g., 1 for grayscale, 3 for RGB).
+        num_classes: Integer indicating the number of output target classification nodes.
+        seed: Base random seed integer forwarded sequentially across layer primitives.
+        
+    Returns:
+        params: Dictionary with keys 'conv1', 'conv2', 'fc1', 'fc2' holding sub-dicts.
+    """
+    # Layer 1 Conv: adapts dynamically to the specified input volume channels
+    conv1 = init_conv_layer(out_channels=6, in_channels=in_channels, kernel_size=5, seed=seed + 1)
+    
+    # Layer 2 Conv: 6 input channels, 16 filters, 5x5 kernel
+    conv2 = init_conv_layer(out_channels=16, in_channels=6, kernel_size=5, seed=seed + 2)
+    
+    # Layer 3 Fully-Connected: Sized for 28x28 spatial inputs
+    fc1 = init_linear_layer(in_features=256, out_features=120, seed=seed + 3)
+    
+    # Layer 4 Fully-Connected Output Head: adapts dynamically to the target number of classes
+    fc2 = init_linear_layer(in_features=120, out_features=num_classes, seed=seed + 4)
+    
+    return {
+        'conv1': conv1,
+        'conv2': conv2,
+        'fc1': fc1,
+        'fc2': fc2
+    }
 
 # Step 45 - forward_conv_block (not yet solved)
 # TODO: implement
