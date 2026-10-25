@@ -644,8 +644,23 @@ def adam_step(param, grad, m, v, t, lr, beta_one=0.9, beta_two=0.999, eps=1e-8):
     
     return new_param, new_m, new_v
 
-# Step 42 - init_conv_layer (not yet solved)
-# TODO: implement
+# Step 42 - init_conv_layer
+def init_conv_layer(out_channels, in_channels, kernel_size, seed=0):
+    """
+    Construct the parameters for a single 2D convolution layer.
+    
+    The He fan-in accounts for every input element a single output unit sees:
+    fan_in = in_channels * kernel_size * kernel_size
+    """
+    # Calculate fan_in volume
+    fan_in = in_channels * kernel_size * kernel_size
+    shape = (out_channels, in_channels, kernel_size, kernel_size)
+    
+    # Reuse upstream primitives
+    W = he_init(shape, fan_in, seed)
+    b = init_zero_bias(out_channels)
+    
+    return {'W': W, 'b': b}
 
 # Step 43 - init_linear_layer (not yet solved)
 # TODO: implement
