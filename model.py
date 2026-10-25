@@ -990,8 +990,57 @@ def train_one_epoch(params, opt_state, x, y, batch_size, lr, beta_one, beta_two,
         
     return params, opt_state, step_counter, loss_list
 
-# Step 58 - train_loop (not yet solved)
-# TODO: implement
+# Step 58 - train_loop
+def train_loop(params, x_train, y_train, num_epochs, batch_size, lr=1e-3, beta_one=0.9, beta_two=0.999, eps=1e-8, seed=0):
+    """
+    Drive the full multi-epoch training routine for the LeNet model.
+    
+    Args:
+        params: Initial parameter dictionary tree containing weights and biases.
+        x_train: Training feature input image tensor.
+        y_train: Training integer class target label vector.
+        num_epochs: Total number of complete sweeps through the dataset.
+        batch_size: Integer size of each mini-batch chunk.
+        lr: Base optimizer scalar learning rate.
+        beta_one: Exponential decay tracking rate for Adam first moments.
+        beta_two: Exponential decay tracking rate for Adam second moments.
+        eps: Denominator stabilization smoothing offset constant.
+        seed: Base random seed to compute per-epoch shuffle tracking indexes.
+        
+    Returns:
+        params: The final optimized parameter dictionary.
+        all_losses: A flat list of per-step loss values concatenated across all epochs.
+    """
+    # 1. Build an Adam state that mirrors the parameter tree structurally.
+    # Initialize zero first (m) and second (v) moments matching each parameter's shape.
+    opt_state = {}
+    for layer in params.keys():
+        opt_state[layer] = {}
+        for pname in params[layer].keys():
+            opt_state[layer][pname] = {
+                'm': np.zeros_like(params[layer][pname]),
+                'v': np.zeros_like(params[layer][pname])
+            }
+            
+    # 2. Maintain a global step counter across all training epochs.
+    global_step_counter = 0
+    all_losses = []
+    
+    # 3. Multi-Epoch Training Loop Driver
+    for epoch in range(num_epochs):
+        # Unique per-epoch shuffle seed matching requirements
+        epoch_seed = seed + epoch
+        
+        # Call train_one_epoch (Step 57)
+        params, opt_state, global_step_counter, epoch_losses = train_one_epoch(
+            params, opt_state, x_train, y_train, batch_size, lr,
+            beta_one, beta_two, eps, global_step_counter, seed=epoch_seed
+        )
+        
+        # Concatenate losses flatly across training iterations
+        all_losses.extend(epoch_losses)
+        
+    return params, all_losses
 
 # Step 59 - evaluate (not yet solved)
 # TODO: implement
