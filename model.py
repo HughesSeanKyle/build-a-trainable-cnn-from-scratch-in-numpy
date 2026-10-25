@@ -820,8 +820,27 @@ def backward_classifier_block(dlogits, cache):
         'fc2': {'dW': dW_fc2, 'db': db_fc2}
     }
 
-# Step 50 - lenet_backward (not yet solved)
-# TODO: implement
+# Step 50 - lenet_backward
+def lenet_backward(dlogits, caches):
+    """
+    Stitch every parameter gradient of the model into a single corporate dict.
+    Runs the backpropagation sequence in structural reverse.
+    """
+    # 1. Backward through Classifier Head
+    dgrads_cls = backward_classifier_block(dlogits, caches['classifier'])
+    
+    # 2. Backward through Conv Block 2
+    dx_b2, dW_conv2, db_conv2 = backward_conv_block(dgrads_cls['dx'], caches['block2'])
+    
+    # 3. Backward through Conv Block 1
+    _, dW_conv1, db_conv1 = backward_conv_block(dx_b2, caches['block1'])
+    
+    return {
+        'conv1': {'dW': dW_conv1, 'db': db_conv1},
+        'conv2': {'dW': dW_conv2, 'db': db_conv2},
+        'fc1': dgrads_cls['fc1'],
+        'fc2': dgrads_cls['fc2']
+    }
 
 # Step 51 - lenet_predict (not yet solved)
 # TODO: implement
