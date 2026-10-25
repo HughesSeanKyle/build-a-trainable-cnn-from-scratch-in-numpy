@@ -1042,6 +1042,16 @@ def train_loop(params, x_train, y_train, num_epochs, batch_size, lr=1e-3, beta_o
         
     return params, all_losses
 
-# Step 59 - evaluate (not yet solved)
-# TODO: implement
+# Step 59 - evaluate
+def evaluate(params, x, y):
+    """
+    Score the trained model accuracy fraction over a target dataset slice.
+    """
+    # Step 51 prediction call
+    predictions = lenet_predict(x, params)
+    
+    # Accuracy fraction computation
+    accuracy_fraction = np.mean(predictions == y)
+    
+    return float(accuracy_fraction)
 
