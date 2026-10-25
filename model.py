@@ -853,8 +853,27 @@ def lenet_predict(x, params):
     # Reduce unnormalized logits to row-major integer label indexes
     return argmax_rows(logits).astype(np.int64)
 
-# Step 52 - build_synthetic_image_dataset (not yet solved)
-# TODO: implement
+# Step 52 - build_synthetic_image_dataset
+def build_synthetic_image_dataset(num_samples, num_classes, image_size, in_channels=1, seed=0):
+    """
+    Produce a tiny labeled image set for sanity-checking the CNN.
+    """
+    rng = np.random.default_rng(seed)
+    
+    # Draw the integer labels uniformly
+    y = rng.integers(0, num_classes, size=(num_samples,))
+    
+    # Draw pixel values using standard normal distribution
+    x = rng.standard_normal((num_samples, in_channels, image_size, image_size))
+    
+    # Shift arrays to make classes linearly separable
+    for k in range(num_classes):
+        mask = (y == k)
+        if np.any(mask):
+            shift_scalar = k - (num_classes - 1) / 2.0
+            x[mask] += shift_scalar
+            
+    return x, y
 
 # Step 53 - shuffle_indices (not yet solved)
 # TODO: implement
