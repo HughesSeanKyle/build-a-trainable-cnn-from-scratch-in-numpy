@@ -461,8 +461,39 @@ def linear_backward(dout, cache):
     db = linear_grad_bias(dout)
     return dx, dW, db
 
-# Step 34 - softmax_cross_entropy_forward (not yet solved)
-# TODO: implement
+# Step 34 - softmax_cross_entropy_forward
+# A simple global dictionary to act as our layer cache mechanism
+_fused_loss_cache = {}
+
+# Step 34 - softmax_cross_entropy_forward
+def softmax_cross_entropy_forward(logits, y):
+    """
+    Compute fused stable softmax probabilities and mean cross-entropy loss.
+    
+    Args:
+        logits: (N, C) array of unnormalized log probabilities.
+        y: (N,) array of integer target class indexes.
+        
+    Returns:
+        loss: Python float indicating the mean cross-entropy error value.
+    """
+    # Reuse upstream stable_softmax (Step 5)
+    probs = stable_softmax(logits)
+    
+    # Reuse upstream cross_entropy_loss (Step 8)
+    loss_scalar = cross_entropy_loss(probs, y)
+    
+    # Cache parameters globally for step 35 to consume
+    global _fused_loss_cache
+    _fused_loss_cache['probs'] = probs
+    _fused_loss_cache['labels'] = y
+    
+    # Coerce negative zero artifacts to positive zero
+    if abs(loss_scalar) < 1e-15:
+        loss_scalar = 0.0
+        
+    # Force the return value to be a standard Python float
+    return float(loss_scalar)
 
 # Step 35 - softmax_cross_entropy_backward (not yet solved)
 # TODO: implement
