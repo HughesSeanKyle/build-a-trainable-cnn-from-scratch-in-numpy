@@ -898,8 +898,19 @@ def shuffle_indices(n, seed=0):
     
     return indices
 
-# Step 54 - train_test_split (not yet solved)
-# TODO: implement
+# Step 54 - train_test_split
+def train_test_split(x, y, test_fraction=0.2, seed=0):
+    """
+    Partition features and labels into training and test sets using a shared shuffled order.
+    """
+    N = len(y)
+    shuffled_idx = shuffle_indices(N, seed=seed)
+    
+    split_boundary = int(N * test_fraction)
+    test_idx = shuffled_idx[:split_boundary]
+    train_idx = shuffled_idx[split_boundary:]
+    
+    return x[train_idx], y[train_idx], x[test_idx], y[test_idx]
 
 # Step 55 - iterate_minibatches (not yet solved)
 # TODO: implement
