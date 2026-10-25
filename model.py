@@ -796,8 +796,29 @@ def backward_conv_block(dout, cache):
     
     return dx, dW, db
 
-# Step 49 - backward_classifier_block (not yet solved)
-# TODO: implement
+# Step 49 - backward_classifier_block
+def backward_classifier_block(dlogits, cache):
+    """
+    Walk the dense classifier head backward in reverse execution order:
+    FC2 Backprop -> ReLU Backprop -> FC1 Backprop -> Flatten Backprop
+    """
+    # 1. Backprop output linear layer (FC2)
+    drelu_out, dW_fc2, db_fc2 = linear_backward(dlogits, cache['fc2_cache'])
+    
+    # 2. Backprop through ReLU
+    dfc1_out = relu_backward(drelu_out, cache['relu_cache'])
+    
+    # 3. Backprop intermediate linear layer (FC1)
+    dflat_out, dW_fc1, db_fc1 = linear_backward(dfc1_out, cache['fc1_cache'])
+    
+    # 4. Backprop through Flatten to restore target dimensions
+    dx = flatten_backward(dflat_out, cache['flatten_cache'])
+    
+    return {
+        'dx': dx,
+        'fc1': {'dW': dW_fc1, 'db': db_fc1},
+        'fc2': {'dW': dW_fc2, 'db': db_fc2}
+    }
 
 # Step 50 - lenet_backward (not yet solved)
 # TODO: implement
