@@ -495,8 +495,35 @@ def softmax_cross_entropy_forward(logits, y):
     # Force the return value to be a standard Python float
     return float(loss_scalar)
 
-# Step 35 - softmax_cross_entropy_backward (not yet solved)
-# TODO: implement
+# Step 35 - softmax_cross_entropy_backward
+# Step 35 - softmax_cross_entropy_backward
+def softmax_cross_entropy_backward(logits, y):
+    """
+    Compute the gradient of the fused loss with respect to the input logits.
+    
+    Args:
+        logits: (N, C) array of unnormalized log probabilities.
+        y: (N,) array of integer target class indexes.
+        
+    Returns:
+        dlogits: (N, C) gradient matrix.
+    """
+    N = len(y)
+    num_classes = logits.shape[1]
+    
+    # Reuse upstream stable_softmax (Step 5)
+    probs = stable_softmax(logits)
+    
+    # Reuse upstream one_hot (Step 6)
+    y_true = one_hot(y, num_classes)
+    
+    # Mathematically simplified gradient: (Probs - TrueOneHot) averaged over batch N
+    dlogits = (probs - y_true) / N
+    
+    # Clean up floating-point negative zero artifacts
+    dlogits[np.abs(dlogits) < 1e-15] = 0.0
+    
+    return dlogits
 
 # Step 36 - sgd_step (not yet solved)
 # TODO: implement
