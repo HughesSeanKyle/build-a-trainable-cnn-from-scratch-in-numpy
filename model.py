@@ -610,8 +610,39 @@ def adam_param_step(param, m_hat, v_hat, lr, eps):
     """
     return param - (lr / (np.sqrt(v_hat) + eps)) * m_hat
 
-# Step 41 - adam_step (not yet solved)
-# TODO: implement
+# Step 41 - adam_step
+import numpy as np
+
+def adam_step(param, grad, m, v, t, lr, beta_one=0.9, beta_two=0.999, eps=1e-8):
+    """
+    Perform one full Adam optimizer update by chaining the four upstream Adam helpers.
+    
+    Args:
+        param: Current parameter array.
+        grad: Current gradient array.
+        m: Running first moment estimate.
+        v: Running second moment estimate.
+        t: Step counter metric index tracker.
+        lr: Active scalar learning rate.
+        beta_one: First moment decay rate hyperparameter.
+        beta_two: Second moment decay rate hyperparameter.
+        eps: Small denominator safety offset variable.
+        
+    Returns:
+        new_param: The adjusted parameter matrix.
+        new_m: Updated uncorrected first moment state array.
+        new_v: Updated uncorrected second moment state array.
+    """
+    # Chain the upstream helpers exactly as specified
+    new_m = adam_update_m(m, grad, beta_one)
+    new_v = adam_update_v(v, grad, beta_two)
+    
+    m_hat = adam_bias_correct(new_m, beta_one, t)
+    v_hat = adam_bias_correct(new_v, beta_two, t)
+    
+    new_param = adam_param_step(param, m_hat, v_hat, lr, eps)
+    
+    return new_param, new_m, new_v
 
 # Step 42 - init_conv_layer (not yet solved)
 # TODO: implement
