@@ -912,8 +912,20 @@ def train_test_split(x, y, test_fraction=0.2, seed=0):
     
     return x[train_idx], y[train_idx], x[test_idx], y[test_idx]
 
-# Step 55 - iterate_minibatches (not yet solved)
-# TODO: implement
+# Step 55 - iterate_minibatches
+def iterate_minibatches(x, y, batch_size, seed=0):
+    """
+    A generator yielding shuffled (xb, yb) pairs covering one full pass over data.
+    Drops any trailing partial batches to guarantee exact batch sizing.
+    """
+    N = len(y)
+    shuffled_idx = shuffle_indices(N, seed=seed)
+    
+    for start_idx in range(0, N - batch_size + 1, batch_size):
+        end_idx = start_idx + batch_size
+        batch_slice = shuffled_idx[start_idx:end_idx]
+        
+        yield x[batch_slice], y[batch_slice]
 
 # Step 56 - train_step (not yet solved)
 # TODO: implement
