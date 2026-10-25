@@ -842,8 +842,16 @@ def lenet_backward(dlogits, caches):
         'fc2': dgrads_cls['fc2']
     }
 
-# Step 51 - lenet_predict (not yet solved)
-# TODO: implement
+# Step 51 - lenet_predict
+def lenet_predict(x, params):
+    """
+    Return the highest-probability class index for each sample in a batch.
+    """
+    # Run the full forward pipeline
+    logits, _ = lenet_forward(x, params)
+    
+    # Reduce unnormalized logits to row-major integer label indexes
+    return argmax_rows(logits).astype(np.int64)
 
 # Step 52 - build_synthetic_image_dataset (not yet solved)
 # TODO: implement
