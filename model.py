@@ -662,8 +662,20 @@ def init_conv_layer(out_channels, in_channels, kernel_size, seed=0):
     
     return {'W': W, 'b': b}
 
-# Step 43 - init_linear_layer (not yet solved)
-# TODO: implement
+# Step 43 - init_linear_layer
+def init_linear_layer(in_features, out_features, seed=0):
+    """
+    Build the parameter dictionary for a single fully-connected layer.
+    
+    For a dense layer, fan_in equals the number of incoming features.
+    """
+    shape = (in_features, out_features)
+    
+    # Reuse upstream primitives
+    W = he_init(shape, in_features, seed)
+    b = init_zero_bias(out_features)
+    
+    return {'W': W, 'b': b}
 
 # Step 44 - init_lenet (not yet solved)
 # TODO: implement
