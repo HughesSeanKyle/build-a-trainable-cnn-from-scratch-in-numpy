@@ -927,8 +927,46 @@ def iterate_minibatches(x, y, batch_size, seed=0):
         
         yield x[batch_slice], y[batch_slice]
 
-# Step 56 - train_step (not yet solved)
-# TODO: implement
+# Step 56 - train_step
+def train_step(params, opt_state, xb, yb, lr, beta_one, beta_two, eps, step):
+    """
+    Run one complete forward and backward training iteration of the network.
+    """
+    # 1. Forward Pass through LeNet
+    logits, caches = lenet_forward(xb, params)
+    
+    # 2. Compute Fused Softmax Cross Entropy Loss
+    loss = softmax_cross_entropy_forward(logits, yb)
+    
+    # 3. Compute Upstream Logits Gradient
+    dlogits = softmax_cross_entropy_backward(logits, yb)
+    
+    # 4. Backward Pass through LeNet
+    grads = lenet_backward(dlogits, caches)
+    
+    # 5. Optimization updates via Adam across structural parameter mirrors
+    new_params = {}
+    new_opt_state = {}
+    
+    for layer in params.keys():
+        new_params[layer] = {}
+        new_opt_state[layer] = {}
+        for pname in params[layer].keys():  # 'W' and 'b'
+            p = params[layer][pname]
+            g = grads[layer][f"d{pname}"]   # maps 'W' to 'dW' and 'b' to 'db'
+            m = opt_state[layer][pname]['m']
+            v = opt_state[layer][pname]['v']
+            
+            # Step 41 optimization helper call
+            updated_p, updated_m, updated_v = adam_step(
+                param=p, grad=g, m=m, v=v, t=step,
+                lr=lr, beta_one=beta_one, beta_two=beta_two, eps=eps
+            )
+            
+            new_params[layer][pname] = updated_p
+            new_opt_state[layer][pname] = {'m': updated_m, 'v': updated_v}
+            
+    return new_params, new_opt_state, loss
 
 # Step 57 - train_one_epoch (not yet solved)
 # TODO: implement
