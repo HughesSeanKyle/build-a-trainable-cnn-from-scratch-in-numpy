@@ -875,8 +875,28 @@ def build_synthetic_image_dataset(num_samples, num_classes, image_size, in_chann
             
     return x, y
 
-# Step 53 - shuffle_indices (not yet solved)
-# TODO: implement
+# Step 53 - shuffle_indices
+import numpy as np
+
+def shuffle_indices(n, seed=0):
+    """
+    Return a reproducible random permutation sequence of the integers in [0, n).
+    
+    Args:
+        n: The upper boundary count for generating indices.
+        seed: The integer random seed for reproducibility.
+        
+    Returns:
+        indices: Integer ndarray of shape (n,) containing numbers from 0 to n-1.
+    """
+    # Seed the legacy global random state to guarantee exact permutation matching
+    np.random.seed(seed)
+    
+    # Generate the sequential array and shuffle its index coordinates in place
+    indices = np.arange(n)
+    np.random.shuffle(indices)
+    
+    return indices
 
 # Step 54 - train_test_split (not yet solved)
 # TODO: implement
